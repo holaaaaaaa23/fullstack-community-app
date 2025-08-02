@@ -1,8 +1,7 @@
-// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import styles from './LoginPage.module.css'; // Import the CSS module
+import styles from './LoginPage.module.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -15,7 +14,7 @@ const LoginPage = () => {
     setError('');
     try {
       const { data } = await axios.post(
-        'http://localhost:5000/api/users/login',
+        `${import.meta.env.VITE_API_URL}/api/users/login`,
         { email, password }
       );
       localStorage.setItem('userInfo', JSON.stringify(data));

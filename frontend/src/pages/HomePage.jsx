@@ -1,14 +1,13 @@
-// src/pages/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Post from '../components/Post';
-import Spinner from '../components/Spinner'; // Import Spinner
+import Spinner from '../components/Spinner';
 import styles from './HomePage.module.css';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [error, setError] = useState(''); // Add error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [content, setContent] = useState('');
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
@@ -17,7 +16,7 @@ const HomePage = () => {
       setLoading(true);
       setError('');
       try {
-        const { data } = await axios.get('http://localhost:5000/api/posts');
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts`);
         setPosts(data);
       } catch (err) {
         setError('Could not fetch posts.');
@@ -42,10 +41,9 @@ const HomePage = () => {
         },
       };
 
-      await axios.post('http://localhost:5000/api/posts', { content }, config);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/posts`, { content }, config);
       setContent('');
-      // Refetch posts by adding the new post to the top of the list
-      const { data } = await axios.get('http://localhost:5000/api/posts');
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts`);
       setPosts(data);
     } catch (error) {
       console.error('Failed to create post', error);

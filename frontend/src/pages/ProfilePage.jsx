@@ -2,20 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Post from '../components/Post';
+import Spinner from '../components/Spinner';
 
 const ProfilePage = () => {
   const [posts, setPosts] = useState([]);
-  const { userId } = useParams(); // Gets the userId from the URL
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const { userId } = useParams();
 
   useEffect(() => {
     const fetchUserPosts = async () => {
+      setLoading(true);
+      setError('');
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/posts/user/${userId}`
+          `${import.meta.env.VITE_API_URL}/api/posts/user/${userId}`
         );
         setPosts(data);
       } catch (error) {
+        setError('Could not fetch user posts.');
         console.error('Failed to fetch user posts', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -24,10 +32,13 @@ const ProfilePage = () => {
 
   return (
     <div>
-      {/* We could fetch and display user's name and bio here too */}
       <h1>User's Posts</h1>
       <hr />
-      {posts.length > 0 ? (
+      {loading ? (
+        <Spinner />
+      ) : error ? (
+        <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+      ) : posts.length > 0 ? (
         posts.map((post) => <Post key={post._id} post={post} />)
       ) : (
         <p>This user has no posts yet.</p>
